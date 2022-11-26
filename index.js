@@ -27,7 +27,10 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         const catProductCollection = client.db('phono').collection('catProduct');
-
+        const productCollection = client.db('phono').collection('product');
+        const categoryCollection = client.db("phono").collection("categories");
+        
+        // catProduct (product + category) in one database
         app.get('/catProduct', async(req, res) =>{
             const query = {};
             const options = await catProductCollection.find(query).toArray();
@@ -38,6 +41,22 @@ async function run(){
             const query = {_id: ObjectId(id)};
             const options = await catProductCollection.findOne(query);
             res.send(options);
+        });
+
+
+        // category collection
+        app.get('/category', async(req, res)=>{
+            const query = {};
+            const category = await categoryCollection.find(query).toArray();
+            res.send(category);
+        })
+
+        // test single product collection
+        app.get('/product/:id', async(req, res) =>{
+            const category_id = req.params.id;
+            const query = {category_id: category_id};
+            const product = await productCollection.find(query).toArray();
+            res.send(product);
         })
     }
     finally{
