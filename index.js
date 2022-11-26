@@ -66,6 +66,15 @@ async function run(){
             const query = {_id: ObjectId(id)};
             const product = await productCollection.findOne(query);
             res.send(product);
+        });
+
+        // post data to buyItem collection
+        app.post('/buyitem', async(req, res) =>{
+            const buyItem = req.body;
+            console.log(buyItem);
+            const result = await buyItemCollection.insertOne(buyItem);
+            res.send(result)
+            
         })
     }
     finally{
