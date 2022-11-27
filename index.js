@@ -25,6 +25,27 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+// jwt function
+function verifyJWT(req, res, next){
+    // console.log("token inside VerifyJWT", req.headers.authorization);
+    const authHeader = req.headers.authorization;
+    if(!authHeader){
+        return res.status(401).send('unauthorized access');
+    }
+
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, function(err, decoded){
+        if(err){
+            return res.status(403).send({message: 'forbidden access'})
+        }
+        req.decoded = decoded;
+        next();
+    })
+
+}
+
+
+
 async function run(){
     try{
         const catProductCollection = client.db('phono').collection('catProduct');
@@ -79,14 +100,22 @@ async function run(){
             
         });
 
+        // using jwt here
         // find my product
-        app.get('/myproduct', async(req, res) => {
+        app.get('/myproduct',verifyJWT, async(req, res) => {
             const email = req.query.email;
+            const decodedEmail = req.decoded.email;
+
+            if(email !== decodedEmail){
+                return res.status(403).send({message: 'forbidden access'})
+            }
+            // console.log('token', req.headers.authorization);
             const query = { sellerEmail: email };
             const myproduct = await productCollection.find(query).toArray();
             res.send(myproduct);
         });
 
+        
         // add user in database
         app.post('/users', async(req, res) =>{
             const user = req.body;
@@ -94,10 +123,24 @@ async function run(){
             res.send(result);
         });
 
+        // jwt token here
+        app.get('/jwt', async(req, res) =>{
+            const email = req.query.email;
+            const query = {email: email}
+            const user = await usersCollection.findOne(query);
+            if(user){
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {expiresIn: '1d'});
+                return res.send({accessToken: token})
+            }
+            // console.log(user);
+            res.status(403).send({accessToken: 'token'})
+            
+        })
+
         // insert product
         app.post('/addproduct', async(req, res) =>{
             const addProduct = req.body;
-            console.log(addProduct);
+            // console.log(addProduct);
             const result = await productCollection.insertOne(addProduct);
             res.send(result)
         })
