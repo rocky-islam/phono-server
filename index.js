@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
@@ -72,7 +73,7 @@ async function run(){
         // post data to buyItem collection
         app.post('/buyitem', async(req, res) =>{
             const buyItem = req.body;
-            console.log(buyItem);
+            // console.log(buyItem);
             const result = await buyItemCollection.insertOne(buyItem);
             res.send(result)
             
@@ -84,7 +85,18 @@ async function run(){
             const query = { sellerEmail: email };
             const myproduct = await productCollection.find(query).toArray();
             res.send(myproduct);
+        });
+
+        // add user in database
+        app.post('/users', async(req, res) =>{
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
         })
+
+
+
+
     }
     finally{
 
