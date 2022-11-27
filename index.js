@@ -29,7 +29,8 @@ async function run(){
         const catProductCollection = client.db('phono').collection('catProduct');
         const productCollection = client.db('phono').collection('product');
         const categoryCollection = client.db("phono").collection("categories");
-        const buyItemCollection = client.db('phono').collection('buyItem')
+        const buyItemCollection = client.db('phono').collection('buyItem');
+        const usersCollection = client.db('phono').collection('users');
         
         // catProduct (product + category) in one database
         app.get('/catProduct', async(req, res) =>{
