@@ -75,6 +75,14 @@ async function run(){
             const result = await buyItemCollection.insertOne(buyItem);
             res.send(result)
             
+        });
+
+        // find my product
+        app.get('/myproduct', async(req, res) => {
+            const email = req.query.email;
+            const query = { sellerEmail: email };
+            const myproduct = await productCollection.find(query).toArray();
+            res.send(myproduct);
         })
     }
     finally{
