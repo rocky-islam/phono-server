@@ -92,9 +92,15 @@ async function run(){
             const user = req.body;
             const result = await usersCollection.insertOne(user);
             res.send(result);
+        });
+
+        // insert product
+        app.post('/addproduct', async(req, res) =>{
+            const addProduct = req.body;
+            console.log(addProduct);
+            const result = await productCollection.insertOne(addProduct);
+            res.send(result)
         })
-
-
 
 
     }
