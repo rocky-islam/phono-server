@@ -145,6 +145,14 @@ async function run(){
             res.send(result)
         })
 
+        // find all seller
+        app.get('/seller', async(req, res) =>{
+            // const role = req.query.role;
+            const query = {role: 'seller'};
+            const user = await usersCollection.find(query).toArray();
+            res.send(user);
+        })
+
 
     }
     finally{
