@@ -110,9 +110,10 @@ async function run(){
         })
 
         // get all buy items
-        app.get('/buyitems', async(req, res) =>{
-            const query={};
-            const result = await buyItemCollection.find(query).toArray();
+        app.get('/buyitems/:id', async(req, res) =>{
+            const id= req.params.id;
+            const query={_id: ObjectId(id)};
+            const result = await buyItemCollection.findOne(query);
             res.send(result);
         })
 
