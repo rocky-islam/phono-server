@@ -172,6 +172,21 @@ async function run(){
             res.send(user);
         })
 
+        // verify seller start
+        app.put('/seller/verify/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id), role: 'seller'};
+            const options = {upsert: true};
+            const updatedDoc = {
+                $set: {
+                    verify: 'verified'
+                }
+            }
+            const result =await usersCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+        // verify seller end
+
         // all buyer
         app.get('/buyer', async(req, res) =>{
             // const role = req.query.role;
