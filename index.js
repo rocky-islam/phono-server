@@ -100,6 +100,14 @@ async function run(){
             
         });
 
+        // get data from by item
+        app.get('/buyitem', async(req, res) =>{
+            const email= req.query.email;
+            const query = {email: email};
+            const result = await buyItemCollection.find(query).toArray();
+            res.send(result);
+        })
+
         // using jwt here
         // find my product
         app.get('/myproduct',verifyJWT, async(req, res) => {
@@ -149,6 +157,14 @@ async function run(){
         app.get('/seller', async(req, res) =>{
             // const role = req.query.role;
             const query = {role: 'seller'};
+            const user = await usersCollection.find(query).toArray();
+            res.send(user);
+        })
+
+        // all buyer
+        app.get('/buyer', async(req, res) =>{
+            // const role = req.query.role;
+            const query = {role: 'buyer'};
             const user = await usersCollection.find(query).toArray();
             res.send(user);
         })
